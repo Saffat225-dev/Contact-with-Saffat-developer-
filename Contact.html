@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Contact Form with Email</title>
+  <style>
+    :root {
+      --bg: #f2f2f2;
+      --card: #ffffff;
+      --text: #333;
+      --btn-bg: #28a745;
+      --btn-hover: #218838;
+    }
+
+    [data-theme="dark"] {
+      --bg: #1e1e1e;
+      --card: #2c2c2c;
+      --text: #f0f0f0;
+      --btn-bg: #444;
+      --btn-hover: #555;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 1rem;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container {
+      background: var(--card);
+      padding: 2rem;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: background 0.3s;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin: 0.5rem 0 0.2rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--btn-bg);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    button:hover {
+      background: var(--btn-hover);
+      transform: translateY(-2px);
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .slider {
+      width: 40px;
+      height: 20px;
+      background: #ccc;
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      top: 1px;
+      left: 1px;
+      transition: transform 0.3s;
+    }
+
+    input[type="checkbox"]:checked + .slider {
+      background: #666;
+    }
+
+    input[type="checkbox"]:checked + .slider::before {
+      transform: translateX(20px);
+    }
+
+    .confirmation {
+      display: none;
+      margin-top: 1rem;
+      background: #d4edda;
+      color: #155724;
+      padding: 0.75rem;
+      border: 1px solid #c3e6cb;
+      border-radius: 6px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="theme-toggle">
+      <input type="checkbox" id="darkSwitch" hidden />
+      <label for="darkSwitch" class="slider"></label>
+    </div>
+
+    <h2>Contact Us</h2>
+    <form id="contactForm">
+      <!-- ✅ Hidden fields to format email -->
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_subject" value="New Contact Form Submission">
+      <input type="hidden" name="_template" value="table">
+
+      <!-- ✅ Email input (must be lowercase 'email') -->
+      <label for="email">Your Gmail</label>
+      <input type="email" id="email" name="email" required placeholder="example@gmail.com" />
+
+      <!-- ✅ Message textarea (must be lowercase 'message') -->
+      <label for="message">Description</label>
+      <textarea id="message" name="message" rows="5" required placeholder="Your message..."></textarea>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="confirmation" class="confirmation">
+      ✅ Your report is sent. You will receive a response in your email within 24 hours.
+    </div>
+  </div>
+
+  <script>
+    // Dark mode toggle
+    const switchToggle = document.getElementById('darkSwitch');
+    const root = document.documentElement;
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+      switchToggle.checked = true;
+    }
+
+    switchToggle.addEventListener('change', () => {
+      if (switchToggle.checked) {
+        root.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        root.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+
+    // FormSubmit logic with JS
+    document.getElementById('contactForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+
+      fetch("https://formsubmit.co/rahimabashir1990@gmail.com", {
+        method: "POST",
+        body: data
+      }).then(() => {
+        form.reset();
+        document.getElementById("confirmation").style.display = "block";
+      }).catch(() => {
+        alert("Something went wrong. Please try again.");
+      });
+    });
+  </script>
+</body>
+</html>
